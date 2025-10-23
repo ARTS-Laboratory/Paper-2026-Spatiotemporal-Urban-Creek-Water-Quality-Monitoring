@@ -1,5 +1,5 @@
 # Paper 2026 Spatiotemporal Urban Creek Water Quality Monitoring
-
+Data and code for the 2026 SPIE Defense paper "Spatiotemporal Urban Creek Water-Quality Monitoring Using an Open-Source Buoy Sensor".
 
 
 ## Data
