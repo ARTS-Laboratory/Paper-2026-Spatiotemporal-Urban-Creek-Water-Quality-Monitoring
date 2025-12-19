@@ -8,9 +8,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+plt.rcParams.update({'text.usetex': True})
+plt.rcParams.update({'image.cmap': 'viridis'})
+plt.rcParams.update({'font.serif':['Times New Roman', 'Times', 'DejaVu Serif',
+  'Bitstream Vera Serif', 'Computer Modern Roman', 'New Century Schoolbook',
+  'Century Schoolbook L', 'Utopia', 'ITC Bookman', 'Bookman', 
+  'Nimbus Roman No9 L', 'Palatino', 'Charter', 'serif']})
+plt.rcParams.update({'font.family':'serif'})
+plt.rcParams.update({'font.size': 10})
+plt.rcParams.update({'mathtext.rm': 'serif'})
+cc = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+
+
 # ---- USER INPUT: replace with your data ----
-positions = np.array([0.0, 10.0, 15, 27.0, 35])   # distances along creek (1D)
-values    = np.array([6.8, 7.3, 8, 7.0, 7.3])         # pH readings
+positions = np.array([0, 7, 16, 30])   # distances along creek (1D)
+values    = np.array([6.9, 7.0, 7.3, 7.0])         # pH readings
 # --------------------------------------------
 
 # create y=0 for all points so we can use the 2D API as a 1D line
@@ -18,7 +31,7 @@ x = positions
 y = np.zeros_like(x)
 
 # prediction locations along the same line (dense grid for smooth curve)
-x_pred = np.linspace(x.min(), x.max(), 500)
+x_pred = np.linspace(x.min(), x.max(), 100)
 y_pred = np.zeros_like(x_pred)
 
 # --- PyKrige ordinary kriging ---
@@ -29,7 +42,7 @@ from pykrige.ok import OrdinaryKriging
 # If variogram_model_parameters is None (default), pykrige will attempt to fit parameters automatically.
 OK = OrdinaryKriging(
     x, y, values,
-    variogram_model='exponential',   # choose model; will be fitted to the data
+    variogram_model='gaussian',   # choose model; will be fitted to the data
     verbose=False,
     enable_plotting=False
 )
@@ -45,20 +58,19 @@ ss_pred = np.clip(ss_pred, 0.0, None)  # numerical safety
 std_pred = np.sqrt(ss_pred)
 
 # 95% CI: mean ± 1.96 * std
-ci_lower = z_pred - 1.9 * std_pred
-ci_upper = z_pred + 1.9 * std_pred
-
+ci_lower = z_pred - 1.96 * std_pred
+ci_upper = z_pred + 1.96 * std_pred
 # ---------------- PLOTTING ----------------
-plt.figure(figsize=(10,5))
-plt.plot(x_pred, z_pred, color='tab:blue', lw=1.8, label='Kriging estimate')
-plt.fill_between(x_pred, ci_lower, ci_upper, color='lightgrey', alpha=0.6, label='95% CI')
-plt.scatter(x, values, color='k', zorder=5, s=60, label='Observations')
-plt.xlabel('Distance along creek')
+plt.figure(figsize=(6.5,3))
+plt.plot(x_pred, z_pred, lw=1, label='Kriging estimate')
+plt.fill_between(x_pred, ci_lower, ci_upper, alpha=0.2, label='95\% CI')
+plt.scatter(x, values, zorder=4, s=30, label='observations')
+plt.xlabel('distance along the creek')
 plt.ylabel('pH')
-plt.title('1D Ordinary Kriging (PyKrige) — estimate with 95% CI')
-plt.legend(loc='upper right')
-plt.grid(True)
-plt.tight_layout()
+plt.legend()
+plt.grid(True, which='major', linestyle='--', linewidth=0.7, alpha=0.7)
+
+plt.tight_layout(pad=0.2)
 plt.show()
 
 # ---------------- SAVE RESULTS ----------------
