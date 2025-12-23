@@ -6,6 +6,7 @@ import requests
 # ============================================================
 # Matplotlib Style Configuration
 # ============================================================
+folder = "time_trimmed_data max stage height in middle"
 
 plt.rcParams.update({'text.usetex': True})
 plt.rcParams.update({'image.cmap': 'viridis'})
@@ -36,10 +37,10 @@ COLORS = {
 # ============================================================
 
 files = [
-    ("Location 1", "time_trimmed_data/ONE.CSV"),
-    ("Location 2", "time_trimmed_data/TWO.CSV"),
-    ("Location 3", "time_trimmed_data/THREE.CSV"),
-    ("Location 4", "time_trimmed_data/FOUR.CSV"),
+    ("Location 1", folder+"/ONE.CSV"),
+    ("Location 2", folder+"/TWO.CSV"),
+    ("Location 3", folder+"/THREE.CSV"),
+    ("Location 4", folder+"/FOUR.CSV"),
 ]
 
 # ============================================================
